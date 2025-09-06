@@ -54,23 +54,8 @@ function checkNodeVersion() {
 async function createProject(config) {
   const projectPath = path.join(process.cwd(), config.projectName);
   
-  // Custom Enfyra spinner - DNA helix style
-  const spinner = ora({
-    text: 'Creating a new Enfyra application...',
-    spinner: {
-      interval: 150,
-      frames: [
-        '🧬    ',
-        ' 🧬   ',
-        '  🧬  ',
-        '   🧬 ',
-        '    🧬',
-        '   🧬 ',
-        '  🧬  ',
-        ' 🧬   '
-      ]
-    }
-  }).start();
+  // Test spinner first - then customize
+  const spinner = ora('Creating a new Enfyra application...').start();
   
   try {
     // Create directory

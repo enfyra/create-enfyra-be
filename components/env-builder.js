@@ -15,15 +15,15 @@ DB_IDLE_TIMEOUT=${config.dbIdleTimeout || '30000'}
 
 #REDIS SETTING
 REDIS_URI=${config.redisUri}
-DEFAULT_TTL=${config.redisTTL}
+DEFAULT_TTL=5
 
 #APP SETTING
-NODE_NAME=${config.nodeName}
+NODE_NAME=${config.projectName}
 PORT=${config.appPort}
 
 #AUTH_SETTING
 SECRET_KEY=${require('crypto').randomBytes(32).toString('hex')}
-SALT_ROUNDS=${config.saltRounds}
+SALT_ROUNDS=10
 ACCESS_TOKEN_EXP=15m
 REFRESH_TOKEN_NO_REMEMBER_EXP=1d
 REFRESH_TOKEN_REMEMBER_EXP=7d`;

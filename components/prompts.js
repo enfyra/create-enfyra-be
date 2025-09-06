@@ -24,14 +24,6 @@ function getPrompts(availableManagers, projectNameArg) {
       default: availableManagers.find(pm => pm.value === "yarn")?.value || availableManagers[0]?.value,
     },
 
-    // NODE NAME
-    {
-      type: "input",
-      name: "nodeName",
-      message: "Node name (for clustering/identification):",
-      default: (answers) => answers.projectName || projectNameArg,
-      validate: validators.required,
-    },
 
     // DATABASE CONFIGURATION
     {
@@ -138,13 +130,6 @@ function getPrompts(availableManagers, projectNameArg) {
       default: "redis://localhost:6379",
       validate: validators.redisUri,
     },
-    {
-      type: "input",
-      name: "redisTTL",
-      message: "Default cache TTL (seconds):",
-      default: "5",
-      validate: validators.nonNegativeNumber,
-    },
 
     // APP SETTINGS
     {
@@ -155,13 +140,6 @@ function getPrompts(availableManagers, projectNameArg) {
       validate: validators.port,
     },
 
-    {
-      type: "input",
-      name: "saltRounds",
-      message: "Password salt rounds:",
-      default: "10",
-      validate: validators.saltRounds,
-    },
   ];
 
   return prompts;

@@ -70,14 +70,20 @@ After running the setup, you'll have:
 
 ```
 my-enfyra-app/
-├── .env                 # Environment configuration
+├── .env                 # Environment configuration  
 ├── package.json         # Dependencies and scripts
 ├── src/                 # Source code
-│   ├── modules/        # NestJS modules
-│   ├── entities/       # TypeORM entities
-│   └── main.ts         # Application entry point
-├── data/               # Data files and schemas
-└── README.md           # Documentation
+│   ├── app.module.ts   # Main NestJS app module
+│   ├── main.ts         # Application entry point
+│   ├── core/           # Core business logic
+│   ├── modules/        # Feature modules
+│   ├── infrastructure/ # External services
+│   └── shared/         # Shared utilities
+├── data/               # Database schemas & snapshots
+├── docs/               # Documentation
+├── test/               # Test files
+├── public/             # Static assets
+└── scripts/            # Utility scripts
 ```
 
 ## 📝 Post-Installation Steps
