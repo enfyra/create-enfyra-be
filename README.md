@@ -1,4 +1,4 @@
-# create-enfyra-be
+# @enfyra/create-enfyra-be
 
 Create a new Enfyra backend application with an interactive CLI setup.
 
@@ -7,28 +7,32 @@ Create a new Enfyra backend application with an interactive CLI setup.
 Create a new Enfyra backend project with a single command:
 
 ```bash
-# Using npm
-npm init enfyra-be
+# Using npx (recommended)
+npx @enfyra/create-enfyra-be
+npx @enfyra/create-enfyra-be my-project
 
-# Using npx (no installation needed)
-npx create-enfyra-be
+# Using npm init
+npm init @enfyra/enfyra-be
+npm init @enfyra/enfyra-be my-project
 
 # Using yarn
-yarn create enfyra-be
+yarn create @enfyra/enfyra-be
+yarn create @enfyra/enfyra-be my-project
 
 # Using bun
-bun create enfyra-be
+bun create @enfyra/enfyra-be
+bun create @enfyra/enfyra-be my-project
 ```
 
 ## 📋 Requirements
 
 Before creating a new Enfyra project, ensure you have:
 
-- **Node.js** >= 18.0.0
+- **Node.js** >= 20.0.0
+- **Package manager** (npm ≥8.0.0, yarn ≥1.22.0, or bun ≥1.0.0)
 - **Database** server (MySQL, MariaDB, or PostgreSQL)
 - **Redis** server
 - **Git** (for cloning the repository)
-- **Package manager** (npm, yarn, or bun)
 
 ## 🎯 Features
 
@@ -167,6 +171,15 @@ MIT License - see LICENSE file for details
 ## ⚠️ Troubleshooting
 
 ### Common Issues
+
+**Node.js version error:**
+- Upgrade to Node.js 20.0.0 or higher
+- Use nvm: `nvm install 20 && nvm use 20`
+
+**Package manager version error:**
+- Update npm: `npm install -g npm@latest` 
+- Update yarn: `npm install -g yarn@latest`
+- Install bun: `curl -fsSL https://bun.sh/install | bash`
 
 **Git clone fails:**
 - Check your internet connection
