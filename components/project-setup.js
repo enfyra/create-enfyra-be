@@ -5,31 +5,47 @@ const ora = require('ora');
 const chalk = require('chalk');
 const { generateEnvContent } = require('./env-builder');
 
-// Check available package managers
+// Check available package managers with version validation
 function detectPackageManagers() {
   const managers = [];
+  
+  // Check npm (minimum version 8.0.0)
   try {
-    execSync('npm --version', { stdio: 'ignore' });
-    managers.push('npm');
+    const npmVersion = execSync('npm --version', { encoding: 'utf8', stdio: 'pipe' }).trim();
+    const majorVersion = parseInt(npmVersion.split('.')[0]);
+    if (majorVersion >= 8) {
+      managers.push({ name: 'npm', value: 'npm', version: npmVersion });
+    }
   } catch {}
+  
+  // Check yarn (minimum version 1.22.0)
   try {
-    execSync('yarn --version', { stdio: 'ignore' });
-    managers.push('yarn');
+    const yarnVersion = execSync('yarn --version', { encoding: 'utf8', stdio: 'pipe' }).trim();
+    const [major, minor] = yarnVersion.split('.').map(Number);
+    if (major > 1 || (major === 1 && minor >= 22)) {
+      managers.push({ name: 'yarn', value: 'yarn', version: yarnVersion });
+    }
   } catch {}
+  
+  // Check bun (minimum version 1.0.0)
   try {
-    execSync('bun --version', { stdio: 'ignore' });
-    managers.push('bun');
+    const bunVersion = execSync('bun --version', { encoding: 'utf8', stdio: 'pipe' }).trim();
+    const majorVersion = parseInt(bunVersion.split('.')[0]);
+    if (majorVersion >= 1) {
+      managers.push({ name: 'bun', value: 'bun', version: bunVersion });
+    }
   } catch {}
+  
   return managers;
 }
 
-// Check Node.js version
+// Check Node.js version (minimum 20.0.0)
 function checkNodeVersion() {
   const nodeVersion = process.versions.node;
   const major = parseInt(nodeVersion.split('.')[0]);
-  if (major < 18) {
+  if (major < 20) {
     console.log(chalk.red(`❌ Node.js version ${nodeVersion} is not supported.`));
-    console.log(chalk.yellow('Please upgrade to Node.js 18.0.0 or higher.'));
+    console.log(chalk.yellow('Please upgrade to Node.js 20.0.0 or higher.'));
     process.exit(1);
   }
 }
@@ -62,13 +78,14 @@ async function createProject(config) {
     
     // Clone repository
     spinner.text = 'Cloning repository...';
+    const gitRepo = 'https://github.com/dothinh115/enfyra_be.git';
     try {
-      execSync(`git clone --depth 1 ${config.gitRepo} .`, {
+      execSync(`git clone --depth 1 ${gitRepo} .`, {
         cwd: projectPath,
         stdio: 'ignore'
       });
     } catch (error) {
-      throw new Error(`Failed to clone repository: ${config.gitRepo}`);
+      throw new Error(`Failed to clone repository: ${gitRepo}`);
     }
     
     // Remove .git folder for fresh start

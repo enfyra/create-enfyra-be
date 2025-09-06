@@ -18,19 +18,15 @@ REDIS_URI=${config.redisUri}
 DEFAULT_TTL=${config.redisTTL}
 
 #APP SETTING
-MAX_VM_TIMEOUT_MS=${config.maxVmTimeout}
 NODE_NAME=${config.nodeName}
 PORT=${config.appPort}
 
 #AUTH_SETTING
-SECRET_KEY=${config.secretKey}
+SECRET_KEY=${require('crypto').randomBytes(32).toString('hex')}
 SALT_ROUNDS=${config.saltRounds}
-ACCESS_TOKEN_EXP=${config.accessTokenExp}
-REFRESH_TOKEN_NO_REMEMBER_EXP=${config.refreshTokenNoRemember}
-REFRESH_TOKEN_REMEMBER_EXP=${config.refreshTokenRemember}
-
-#ENVIRONMENT
-NODE_ENV=${config.nodeEnv}`;
+ACCESS_TOKEN_EXP=15m
+REFRESH_TOKEN_NO_REMEMBER_EXP=1d
+REFRESH_TOKEN_REMEMBER_EXP=7d`;
 }
 
 module.exports = {

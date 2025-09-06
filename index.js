@@ -26,9 +26,20 @@ async function main() {
   // Check available package managers
   const availableManagers = detectPackageManagers();
   if (availableManagers.length === 0) {
-    console.log(chalk.red('❌ No package manager found! Please install npm, yarn, or bun.'));
+    console.log(chalk.red('❌ No compatible package manager found!'));
+    console.log(chalk.yellow('Please install one of the following:'));
+    console.log(chalk.yellow('  • npm >= 8.0.0'));
+    console.log(chalk.yellow('  • yarn >= 1.22.0'));
+    console.log(chalk.yellow('  • bun >= 1.0.0'));
     process.exit(1);
   }
+
+  // Show detected package managers with versions
+  console.log(chalk.gray('Detected package managers:'));
+  availableManagers.forEach(pm => {
+    console.log(chalk.gray(`  • ${pm.name} v${pm.version}`));
+  });
+  console.log('');
 
   // Get project name from arguments or prompt
   const projectNameArg = program.args[0];
