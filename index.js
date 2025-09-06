@@ -6,6 +6,7 @@ const { program } = require('commander');
 
 const { detectPackageManagers, checkNodeVersion, createProject } = require('./components/project-setup');
 const { getPrompts, getConfirmationPrompt } = require('./components/prompts');
+const { validateAllConnections } = require('./components/connection-validator');
 
 async function main() {
   // Parse command line arguments
@@ -58,6 +59,44 @@ async function main() {
     config.projectName = projectNameArg;
   }
 
+  // Validate connections with retry option
+  let connectionsValid = false;
+  while (!connectionsValid) {
+    connectionsValid = await validateAllConnections(config);
+    
+    if (!connectionsValid) {
+      const { retry } = await inquirer.prompt([
+        {
+          type: 'list',
+          name: 'retry',
+          message: 'What would you like to do?',
+          choices: [
+            { name: 'Re-enter connection details', value: 'retry' },
+            { name: 'Exit setup', value: 'exit' }
+          ]
+        }
+      ]);
+      
+      if (retry === 'exit') {
+        console.log(chalk.yellow('\n👋 Setup cancelled. Fix your connections and try again later.'));
+        process.exit(0);
+      }
+      
+      // Re-prompt for connection details
+      console.log(chalk.cyan('\n🔄 Please re-enter your connection details:\n'));
+      
+      const connectionPrompts = getPrompts(availableManagers, projectNameArg).filter(prompt => 
+        ['dbType', 'dbHost', 'dbPort', 'dbUsername', 'dbPassword', 'dbName', 'redisUri'].includes(prompt.name) ||
+        (prompt.when && ['configurePool', 'dbPoolSize', 'dbConnectionLimit', 'dbAcquireTimeout', 'dbIdleTimeout'].includes(prompt.name))
+      );
+      
+      const newConnectionConfig = await inquirer.prompt(connectionPrompts);
+      
+      // Update config with new connection details
+      Object.assign(config, newConnectionConfig);
+    }
+  }
+
   // Simple confirmation without excessive output
   const { confirm } = await inquirer.prompt([getConfirmationPrompt()]);
 
@@ -69,7 +108,21 @@ async function main() {
   // Create the project
   try {
     await createProject(config);
+    
+    // Success message
+    console.log(chalk.green('\n✨ Done! Your Enfyra backend is ready.\n'));
+    
+    const commands = {
+      npm: 'npm run start:dev',
+      yarn: 'yarn start:dev',
+      bun: 'bun run start:dev'
+    }[config.packageManager];
+    
+    console.log(chalk.cyan(`  cd ${config.projectName}`));
+    console.log(chalk.cyan(`  ${commands}`));
+    
   } catch (error) {
+    console.error(chalk.red(`\n❌ Setup failed: ${error.message}`));
     process.exit(1);
   }
 }

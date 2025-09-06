@@ -1,3 +1,13 @@
+const fs = require('fs-extra');
+const path = require('path');
+
+async function generateEnvFile(projectPath, config) {
+  const envContent = generateEnvContent(config);
+  const envPath = path.join(projectPath, '.env');
+  
+  await fs.writeFile(envPath, envContent);
+}
+
 function generateEnvContent(config) {
   return `#DB SETTING
 DB_TYPE=${config.dbType}
@@ -30,5 +40,6 @@ REFRESH_TOKEN_REMEMBER_EXP=7d`;
 }
 
 module.exports = {
+  generateEnvFile,
   generateEnvContent
 };
