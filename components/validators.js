@@ -61,13 +61,8 @@ const validators = {
     const timeout = parseInt(input);
     if (isNaN(timeout) || timeout < 100) return 'Invalid timeout (min 100ms)';
     return true;
-  },
-
-  gitRepo: (input) => {
-    if (!input.trim()) return 'Repository URL is required';
-    if (!input.includes('git')) return 'Invalid Git repository URL';
-    return true;
   }
+
 };
 
 module.exports = validators;

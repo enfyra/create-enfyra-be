@@ -71,10 +71,6 @@ async function createProject(config) {
     });
     spinner.succeed(chalk.green('Template downloaded successfully'));
 
-    // Clean up git history
-    spinner.start(chalk.blue('Cleaning up git history...'));
-    await cleanupGitHistory(projectPath);
-    spinner.succeed(chalk.green('Git history cleaned'));
 
     // Update package.json
     spinner.start(chalk.blue('Updating package.json...'));
@@ -91,10 +87,6 @@ async function createProject(config) {
     await installDependencies(projectPath, config);
     spinner.succeed(chalk.green('Dependencies installed successfully'));
 
-    // Initialize git repository
-    spinner.start(chalk.blue('Initializing git repository...'));
-    await initializeGit(projectPath);
-    spinner.succeed(chalk.green('Git repository initialized'));
 
   } catch (error) {
     spinner.fail(chalk.red('Setup failed'));
@@ -109,12 +101,6 @@ async function createProject(config) {
 }
 
 
-async function cleanupGitHistory(projectPath) {
-  const gitDir = path.join(projectPath, '.git');
-  if (fs.existsSync(gitDir)) {
-    await fs.remove(gitDir);
-  }
-}
 
 async function updatePackageJson(projectPath, config) {
   const packageJsonPath = path.join(projectPath, 'package.json');
@@ -174,49 +160,6 @@ async function installDependencies(projectPath, config) {
   });
 }
 
-async function initializeGit(projectPath) {
-  return new Promise((resolve) => {
-    const gitInit = spawn('git', ['init'], {
-      cwd: projectPath,
-      stdio: 'pipe'
-    });
-    
-    gitInit.on('close', (code) => {
-      if (code === 0) {
-        // Add initial commit
-        const gitAdd = spawn('git', ['add', '.'], {
-          cwd: projectPath,
-          stdio: 'pipe'
-        });
-        
-        gitAdd.on('close', (addCode) => {
-          if (addCode === 0) {
-            const gitCommit = spawn('git', ['commit', '-m', 'Initial commit from create-enfyra-be'], {
-              cwd: projectPath,
-              stdio: 'pipe'
-            });
-            
-            gitCommit.on('close', (commitCode) => {
-              if (commitCode === 0) {
-                resolve();
-              } else {
-                resolve(); // Don't fail the whole process for git commit issues
-              }
-            });
-          } else {
-            resolve(); // Don't fail for git add issues
-          }
-        });
-      } else {
-        resolve(); // Don't fail for git init issues
-      }
-    });
-    
-    gitInit.on('error', () => {
-      resolve(); // Don't fail if git is not available
-    });
-  });
-}
 
 module.exports = {
   detectPackageManagers,
