@@ -45,10 +45,10 @@ npm run start:dev
 
 ## 📚 Documentation
 
-For detailed setup, API usage, and development guides, visit the **[Enfyra Backend Documentation](https://github.com/dothinh115/enfyra_be#readme)**.
+For detailed setup, API usage, and development guides, visit the **[Enfyra Backend Documentation](https://github.com/dothinh115/enfyra-be#readme)**.
 
 ## 🔗 Links
 
-- [Enfyra Backend Repository](https://github.com/dothinh115/enfyra_be)
-- [Documentation](https://github.com/dothinh115/enfyra_be#readme)
+- [Enfyra Backend Repository](https://github.com/dothinh115/enfyra-be)
+- [Documentation](https://github.com/dothinh115/enfyra-be#readme)
 - [Issue Tracker](https://github.com/dothinh115/create-enfyra-be/issues)

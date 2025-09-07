@@ -64,7 +64,7 @@ async function createProject(config) {
 
     // Download backend template using giget
     spinner.start(chalk.blue('Downloading backend template...'));
-    await downloadTemplate('github:dothinh115/enfyra_be', {
+    await downloadTemplate('github:dothinh115/enfyra-be', {
       dir: projectPath,
       force: true,
       provider: 'github'
