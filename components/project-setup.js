@@ -3,6 +3,7 @@ const path = require('path');
 const { spawn, execSync } = require('child_process');
 const ora = require('ora');
 const chalk = require('chalk');
+const { downloadTemplate } = require('giget');
 const { generateEnvFile } = require('./env-builder');
 
 // Check available package managers with version validation
@@ -61,11 +62,14 @@ async function createProject(config) {
     await fs.ensureDir(projectPath);
     spinner.succeed(chalk.green('Project directory created'));
 
-    // Clone backend template
-    const templateRepo = 'https://github.com/dothinh115/enfyra_be.git';
-    spinner.start(chalk.blue('Cloning backend template...'));
-    await cloneTemplate(templateRepo, projectPath);
-    spinner.succeed(chalk.green('Template cloned successfully'));
+    // Download backend template using giget
+    spinner.start(chalk.blue('Downloading backend template...'));
+    await downloadTemplate('github:dothinh115/enfyra_be', {
+      dir: projectPath,
+      force: true,
+      provider: 'github'
+    });
+    spinner.succeed(chalk.green('Template downloaded successfully'));
 
     // Clean up git history
     spinner.start(chalk.blue('Cleaning up git history...'));
@@ -104,36 +108,6 @@ async function createProject(config) {
   }
 }
 
-async function cloneTemplate(repoUrl, projectPath) {
-  return new Promise((resolve, reject) => {
-    const gitClone = spawn('git', [
-      'clone',
-      '--depth', '1',
-      repoUrl,
-      projectPath
-    ], {
-      stdio: 'pipe'
-    });
-
-    let stderr = '';
-
-    gitClone.stderr.on('data', (data) => {
-      stderr += data.toString();
-    });
-
-    gitClone.on('close', (code) => {
-      if (code === 0) {
-        resolve();
-      } else {
-        reject(new Error(`Git clone failed: ${stderr}`));
-      }
-    });
-
-    gitClone.on('error', (error) => {
-      reject(new Error(`Git clone error: ${error.message}`));
-    });
-  });
-}
 
 async function cleanupGitHistory(projectPath) {
   const gitDir = path.join(projectPath, '.git');
@@ -201,7 +175,7 @@ async function installDependencies(projectPath, config) {
 }
 
 async function initializeGit(projectPath) {
-  return new Promise((resolve, reject) => {
+  return new Promise((resolve) => {
     const gitInit = spawn('git', ['init'], {
       cwd: projectPath,
       stdio: 'pipe'
