@@ -17,13 +17,14 @@ function getPrompts(availableManagers, projectNameArg) {
       type: "list",
       name: "packageManager",
       message: "Package manager:",
-      choices: availableManagers.map(pm => ({
+      choices: availableManagers.map((pm) => ({
         name: `${pm.name} (v${pm.version})`,
-        value: pm.value
+        value: pm.value,
       })),
-      default: availableManagers.find(pm => pm.value === "yarn")?.value || availableManagers[0]?.value,
+      default:
+        availableManagers.find((pm) => pm.value === "yarn")?.value ||
+        availableManagers[0]?.value,
     },
-
 
     // DATABASE CONFIGURATION
     {
@@ -139,7 +140,19 @@ function getPrompts(availableManagers, projectNameArg) {
       default: "1105",
       validate: validators.port,
     },
-
+    {
+      type: "input",
+      name: "adminEmail",
+      message: "Admin email:",
+      validate: validators.email,
+    },
+    {
+      type: "password",
+      name: "adminPassword",
+      message: "Admin password:",
+      mask: "*",
+      validate: validators.adminPassword,
+    },
   ];
 
   return prompts;

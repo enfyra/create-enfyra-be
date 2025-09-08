@@ -77,6 +77,11 @@ async function createProject(config) {
     await updatePackageJson(projectPath, config);
     spinner.succeed(chalk.green('Package.json updated'));
 
+    // Update init.json with admin credentials
+    spinner.start(chalk.blue('Configuring admin account...'));
+    await updateInitJson(projectPath, config);
+    spinner.succeed(chalk.green('Admin account configured'));
+
     // Generate environment file
     spinner.start(chalk.blue('Generating environment file...'));
     await generateEnvFile(projectPath, config);
@@ -123,6 +128,28 @@ async function updatePackageJson(projectPath, config) {
   delete packageJson.homepage;
   
   await fs.writeJson(packageJsonPath, packageJson, { spaces: 2 });
+}
+
+async function updateInitJson(projectPath, config) {
+  // Try both possible locations for init.json
+  const initJsonPaths = [
+    path.join(projectPath, 'src/core/bootstrap/data/init.json'),
+    path.join(projectPath, 'dist/core/bootstrap/data/init.json')
+  ];
+  
+  for (const initJsonPath of initJsonPaths) {
+    if (fs.existsSync(initJsonPath)) {
+      const initJson = await fs.readJson(initJsonPath);
+      
+      // Update admin credentials
+      if (initJson.user_definition) {
+        initJson.user_definition.email = config.adminEmail;
+        initJson.user_definition.password = config.adminPassword;
+      }
+      
+      await fs.writeJson(initJsonPath, initJson, { spaces: 2 });
+    }
+  }
 }
 
 async function installDependencies(projectPath, config) {

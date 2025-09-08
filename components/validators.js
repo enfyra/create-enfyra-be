@@ -61,6 +61,18 @@ const validators = {
     const timeout = parseInt(input);
     if (isNaN(timeout) || timeout < 100) return 'Invalid timeout (min 100ms)';
     return true;
+  },
+
+  email: (input) => {
+    if (!input.trim()) return 'Email is required';
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (!emailRegex.test(input)) return 'Invalid email format';
+    return true;
+  },
+
+  adminPassword: (input) => {
+    if (!input || input.length < 4) return 'Password must be at least 4 characters';
+    return true;
   }
 
 };
