@@ -30,6 +30,7 @@ DEFAULT_TTL=5
 #APP SETTING
 NODE_NAME=${config.projectName}
 PORT=${config.appPort}
+PACKAGE_MANAGER=${config.packageManager}
 
 #AUTH_SETTING
 SECRET_KEY=${require('crypto').randomBytes(32).toString('hex')}
