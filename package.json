@@ -1,6 +1,6 @@
 {
   "name": "@enfyra/create-enfyra-be",
-  "version": "0.1.7",
+  "version": "0.1.8",
   "description": "Create a new Enfyra backend application with an interactive CLI",
   "main": "index.js",
   "bin": {

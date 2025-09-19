@@ -12,7 +12,11 @@ function detectPackageManagers() {
   
   // Check npm (minimum version 8.0.0)
   try {
-    const npmVersion = execSync('npm --version', { encoding: 'utf8', stdio: 'pipe' }).trim();
+    const npmVersion = execSync('npm --version', {
+      encoding: 'utf8',
+      stdio: 'pipe',
+      shell: true
+    }).trim();
     const majorVersion = parseInt(npmVersion.split('.')[0]);
     if (majorVersion >= 8) {
       managers.push({ name: 'npm', value: 'npm', version: npmVersion });
@@ -21,7 +25,11 @@ function detectPackageManagers() {
   
   // Check yarn (minimum version 1.22.0)
   try {
-    const yarnVersion = execSync('yarn --version', { encoding: 'utf8', stdio: 'pipe' }).trim();
+    const yarnVersion = execSync('yarn --version', {
+      encoding: 'utf8',
+      stdio: 'pipe',
+      shell: true
+    }).trim();
     const [major, minor] = yarnVersion.split('.').map(Number);
     if (major > 1 || (major === 1 && minor >= 22)) {
       managers.push({ name: 'yarn', value: 'yarn', version: yarnVersion });
@@ -30,7 +38,11 @@ function detectPackageManagers() {
   
   // Check bun (minimum version 1.0.0)
   try {
-    const bunVersion = execSync('bun --version', { encoding: 'utf8', stdio: 'pipe' }).trim();
+    const bunVersion = execSync('bun --version', {
+      encoding: 'utf8',
+      stdio: 'pipe',
+      shell: true
+    }).trim();
     const majorVersion = parseInt(bunVersion.split('.')[0]);
     if (majorVersion >= 1) {
       managers.push({ name: 'bun', value: 'bun', version: bunVersion });
@@ -159,20 +171,21 @@ async function installDependencies(projectPath, config) {
       yarn: ['install'],
       bun: ['install']
     };
-    
+
     const args = commands[config.packageManager] || commands.npm;
-    
+
     const install = spawn(config.packageManager, args, {
       cwd: projectPath,
-      stdio: 'pipe'
+      stdio: 'pipe',
+      shell: true  // Add shell: true to fix spawn ENOENT on Windows
     });
-    
+
     let stderr = '';
-    
+
     install.stderr.on('data', (data) => {
       stderr += data.toString();
     });
-    
+
     install.on('close', (code) => {
       if (code === 0) {
         resolve();
@@ -180,7 +193,7 @@ async function installDependencies(projectPath, config) {
         reject(new Error(`Package installation failed: ${stderr}`));
       }
     });
-    
+
     install.on('error', (error) => {
       reject(new Error(`Package manager error: ${error.message}`));
     });
