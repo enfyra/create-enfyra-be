@@ -28,6 +28,7 @@ bun create @enfyra/create-enfyra-be my-project
 ## 🎯 What You Get
 
 The interactive CLI sets up a complete NestJS application with:
+
 - Database integration (MySQL/PostgreSQL/MariaDB)
 - Redis caching
 - JWT authentication
@@ -40,7 +41,7 @@ After creating your project:
 
 ```bash
 cd my-project
-npm run start:dev
+npm run start
 ```
 
 ## 📚 Documentation
