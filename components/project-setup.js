@@ -76,7 +76,7 @@ async function createProject(config) {
 
     // Download backend template using giget
     spinner.start(chalk.blue('Downloading backend template...'));
-    await downloadTemplate('github:dothinh115/enfyra-be', {
+    await downloadTemplate('github:enfyra/backend', {
       dir: projectPath,
       force: true,
       provider: 'github'
@@ -167,7 +167,7 @@ async function updateInitJson(projectPath, config) {
 async function installDependencies(projectPath, config) {
   return new Promise((resolve, reject) => {
     const commands = {
-      npm: ['install'],
+      npm: ['install', '--legacy-peer-deps'],
       yarn: ['install'],
       bun: ['install']
     };
@@ -180,7 +180,12 @@ async function installDependencies(projectPath, config) {
       shell: true  // Add shell: true to fix spawn ENOENT on Windows
     });
 
+    let stdout = '';
     let stderr = '';
+
+    install.stdout.on('data', (data) => {
+      stdout += data.toString();
+    });
 
     install.stderr.on('data', (data) => {
       stderr += data.toString();
@@ -190,12 +195,14 @@ async function installDependencies(projectPath, config) {
       if (code === 0) {
         resolve();
       } else {
-        reject(new Error(`Package installation failed: ${stderr}`));
+        // Log more detailed error information
+        const errorMsg = stderr || stdout || 'Unknown error';
+        reject(new Error(`Package installation failed with code ${code}: ${errorMsg}`));
       }
     });
 
     install.on('error', (error) => {
-      reject(new Error(`Package manager error: ${error.message}`));
+      reject(new Error(`Package manager spawn error: ${error.message}. Make sure ${config.packageManager} is installed and in PATH`));
     });
   });
 }
