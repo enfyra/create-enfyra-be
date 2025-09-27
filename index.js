@@ -31,6 +31,7 @@ async function main() {
     console.log(chalk.yellow('Please install one of the following:'));
     console.log(chalk.yellow('  • npm >= 8.0.0'));
     console.log(chalk.yellow('  • yarn >= 1.22.0'));
+    console.log(chalk.yellow('  • pnpm >= 6.0.0'));
     console.log(chalk.yellow('  • bun >= 1.0.0'));
     process.exit(1);
   }
@@ -115,6 +116,7 @@ async function main() {
     const commands = {
       npm: 'npm run start:dev',
       yarn: 'yarn start:dev',
+      pnpm: 'pnpm start:dev',
       bun: 'bun run start:dev'
     }[config.packageManager];
     
@@ -123,6 +125,7 @@ async function main() {
     
   } catch (error) {
     console.error(chalk.red(`\n❌ Setup failed: ${error.message}`));
+    console.log(chalk.yellow('\n💡 You can try again with the same command.'));
     process.exit(1);
   }
 }

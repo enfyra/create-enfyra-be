@@ -4,10 +4,10 @@ const Redis = require('ioredis');
 const chalk = require('chalk');
 
 async function validateDatabaseConnection(config) {
-  const { dbType, dbHost, dbPort, dbUsername, dbPassword, dbName } = config;
-  
+  const { dbType, dbHost, dbPort, dbUsername, dbPassword } = config;
+
   console.log(chalk.gray(`\n🔍 Testing ${dbType} connection...`));
-  
+
   try {
     if (dbType === 'mysql' || dbType === 'mariadb') {
       const connection = await mysql.createConnection({
@@ -15,32 +15,32 @@ async function validateDatabaseConnection(config) {
         port: parseInt(dbPort),
         user: dbUsername,
         password: dbPassword,
-        database: dbName,
         connectTimeout: 5000
+        // Remove database from connection - only test server connection
       });
       await connection.ping();
       await connection.end();
-      
+
     } else if (dbType === 'postgres') {
       const client = new Client({
         host: dbHost,
         port: parseInt(dbPort),
         user: dbUsername,
         password: dbPassword,
-        database: dbName,
         connectionTimeoutMillis: 5000
+        // Remove database from connection - only test server connection
       });
       await client.connect();
       await client.query('SELECT 1');
       await client.end();
     }
-    
+
     console.log(chalk.green(`✅ Database connection successful`));
     return true;
-    
+
   } catch (error) {
     console.log(chalk.red(`❌ Database connection failed: ${error.message}`));
-    
+
     // Provide helpful error suggestions
     if (error.code === 'ECONNREFUSED') {
       console.log(chalk.yellow(`💡 Suggestions:`));
@@ -49,13 +49,9 @@ async function validateDatabaseConnection(config) {
     } else if (error.code === 'ER_ACCESS_DENIED_ERROR' || error.code === '28P01') {
       console.log(chalk.yellow(`💡 Suggestions:`));
       console.log(chalk.yellow(`   • Check username and password`));
-      console.log(chalk.yellow(`   • Verify user has access to database: ${dbName}`));
-    } else if (error.code === 'ER_BAD_DB_ERROR' || error.code === '3D000') {
-      console.log(chalk.yellow(`💡 Suggestions:`));
-      console.log(chalk.yellow(`   • Database '${dbName}' doesn't exist`));
-      console.log(chalk.yellow(`   • Create the database first or use existing one`));
+      console.log(chalk.yellow(`   • Verify user has database access permissions`));
     }
-    
+
     return false;
   }
 }

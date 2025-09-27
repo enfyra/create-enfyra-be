@@ -36,19 +36,47 @@ function detectPackageManagers() {
     }
   } catch {}
   
-  // Check bun (minimum version 1.0.0)
+  // Check pnpm (minimum version 6.0.0)
   try {
-    const bunVersion = execSync('bun --version', {
+    const pnpmVersion = execSync('pnpm --version', {
       encoding: 'utf8',
       stdio: 'pipe',
       shell: true
     }).trim();
-    const majorVersion = parseInt(bunVersion.split('.')[0]);
-    if (majorVersion >= 1) {
-      managers.push({ name: 'bun', value: 'bun', version: bunVersion });
+    const majorVersion = parseInt(pnpmVersion.split('.')[0]);
+    if (majorVersion >= 6) {
+      managers.push({ name: 'pnpm', value: 'pnpm', version: pnpmVersion });
     }
   } catch {}
-  
+
+  // Check bun (minimum version 1.0.0)
+  try {
+    // Try to detect bun with full path first
+    let bunVersion;
+    const bunPath = path.join(process.env.HOME || '', '.bun', 'bin', 'bun');
+
+    // Try using full path if exists
+    if (fs.existsSync(bunPath)) {
+      bunVersion = execSync(`${bunPath} --version`, {
+        encoding: 'utf8',
+        stdio: 'pipe',
+        shell: true
+      }).trim();
+    } else {
+      // Fallback to regular command
+      bunVersion = execSync('bun --version', {
+        encoding: 'utf8',
+        stdio: 'pipe',
+        shell: true
+      }).trim();
+    }
+
+    const majorVersion = parseInt(bunVersion.split('.')[0]);
+    if (majorVersion >= 1) {
+      managers.push({ name: 'bun', value: 'bun', version: bunVersion, path: bunPath });
+    }
+  } catch {}
+
   return managers;
 }
 
@@ -101,18 +129,49 @@ async function createProject(config) {
 
     // Install dependencies
     spinner.start(chalk.blue(`Installing dependencies with ${config.packageManager}...`));
-    await installDependencies(projectPath, config);
-    spinner.succeed(chalk.green('Dependencies installed successfully'));
+    try {
+      await installDependencies(projectPath, config);
+      spinner.succeed(chalk.green('Dependencies installed successfully'));
+    } catch (error) {
+      spinner.fail(chalk.red('Dependencies installation failed'));
+
+      // Package manager specific error handling
+      const packageManagerIssues = {
+        bun: 'https://github.com/oven-sh/bun/issues',
+        pnpm: 'https://github.com/pnpm/pnpm/issues',
+        yarn: 'https://github.com/yarnpkg/yarn/issues',
+        npm: 'https://github.com/npm/cli/issues'
+      };
+
+      const issueUrl = packageManagerIssues[config.packageManager];
+      const otherManagers = Object.keys(packageManagerIssues).filter(pm => pm !== config.packageManager);
+
+      throw new Error(
+        `\n\n${chalk.red(`⚠️  ${config.packageManager} is experiencing issues.`)}\n\n` +
+        `${chalk.yellow('Please report this issue at:')} ${chalk.cyan(issueUrl)}\n\n` +
+        `${chalk.green('Alternative: Please try using a different package manager:')}\n` +
+        `  ${chalk.cyan('npx @enfyra/create-enfyra-be')}\n` +
+        `  ${chalk.gray(`Then select one of: ${otherManagers.join(', ')}`)}\n\n` +
+        `${chalk.red('Error details:')} ${error.message}\n`
+      );
+    }
 
 
   } catch (error) {
     spinner.fail(chalk.red('Setup failed'));
-    
-    // Cleanup on failure
+
+    // Always cleanup on any failure
     if (fs.existsSync(projectPath)) {
-      await fs.remove(projectPath);
+      spinner.start(chalk.yellow('Cleaning up project directory...'));
+      try {
+        await fs.remove(projectPath);
+        spinner.succeed(chalk.yellow('Project directory cleaned up'));
+      } catch (cleanupError) {
+        spinner.warn(chalk.yellow(`Could not clean up directory: ${projectPath}`));
+        console.log(chalk.gray('Please manually delete this directory before trying again.'));
+      }
     }
-    
+
     throw error;
   }
 }
@@ -169,15 +228,35 @@ async function installDependencies(projectPath, config) {
     const commands = {
       npm: ['install', '--legacy-peer-deps'],
       yarn: ['install'],
+      pnpm: ['install'],
       bun: ['install']
     };
 
     const args = commands[config.packageManager] || commands.npm;
 
-    const install = spawn(config.packageManager, args, {
+    // For Bun, use full path if available
+    let commandPath = config.packageManager;
+    if (config.packageManager === 'bun') {
+      const bunPath = path.join(process.env.HOME || '', '.bun', 'bin', 'bun');
+      if (fs.existsSync(bunPath)) {
+        commandPath = bunPath;
+      }
+    }
+
+    // Add environment variables for better network handling
+    const env = { ...process.env };
+    if (config.packageManager === 'bun') {
+      // Disable IPv6 for Bun if having connection issues
+      env.NODE_OPTIONS = '--dns-result-order=ipv4first';
+      // Increase timeout for slow connections
+      env.BUN_CONFIG_TIMEOUT = '60000';
+    }
+
+    const install = spawn(commandPath, args, {
       cwd: projectPath,
       stdio: 'pipe',
-      shell: true  // Add shell: true to fix spawn ENOENT on Windows
+      shell: true,  // Add shell: true to fix spawn ENOENT on Windows
+      env
     });
 
     let stdout = '';
@@ -197,7 +276,8 @@ async function installDependencies(projectPath, config) {
       } else {
         // Log more detailed error information
         const errorMsg = stderr || stdout || 'Unknown error';
-        reject(new Error(`Package installation failed with code ${code}: ${errorMsg}`));
+
+        reject(new Error(`${errorMsg}`));
       }
     });
 
