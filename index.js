@@ -113,9 +113,9 @@ async function main() {
     console.log(chalk.green('\n✨ Done! Your Enfyra backend is ready.\n'));
     
     const commands = {
-      npm: 'npm run start:dev',
-      yarn: 'yarn start:dev',
-      bun: 'bun run start:dev'
+      npm: 'npm run start',
+      yarn: 'yarn start',
+      bun: 'bun run start'
     }[config.packageManager];
     
     console.log(chalk.cyan(`  cd ${config.projectName}`));
