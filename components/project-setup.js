@@ -5,6 +5,7 @@ const ora = require('ora');
 const chalk = require('chalk');
 const { downloadTemplate } = require('giget');
 const { generateEnvFile } = require('./env-builder');
+const { checkDiskSpaceAvailable } = require('./disk-space-checker');
 
 // Check available package managers with version validation
 function detectPackageManagers() {
@@ -97,6 +98,14 @@ async function createProject(config) {
   const spinner = ora();
   
   try {
+    // Check disk space before proceeding
+    spinner.start(chalk.blue('Checking available disk space...'));
+    const spaceCheck = await checkDiskSpaceAvailable(process.cwd());
+    spinner.succeed(chalk.green(
+      `Disk space check passed (${spaceCheck.freeGB}GB available of ${(spaceCheck.total / 1024 / 1024 / 1024).toFixed(2)}GB total)`
+    ));
+    console.log(chalk.dim(`Required: ${spaceCheck.requiredGB}GB`));
+
     // Create project directory
     spinner.start(chalk.blue('Creating project directory...'));
     await fs.ensureDir(projectPath);
