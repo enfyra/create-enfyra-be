@@ -19,16 +19,16 @@ async function checkDiskSpaceAvailable(projectPath) {
 
         if (!result.hasEnoughSpace) {
             throw new Error(
-                `Không đủ dung lượng trống.\n` +
-                `Cần ít nhất: ${result.requiredGB} GB\n` +
-                `Hiện còn trống: ${result.freeGB} GB\n` +
-                `Vui lòng giải phóng thêm ${(result.requiredGB - result.freeGB).toFixed(2)} GB để tiếp tục.`
+                `Not enough space.\n` +
+                `Need at least: ${result.requiredGB} GB\n` +
+                `Currently available: ${result.freeGB} GB\n` +
+                `Please free up more ${(result.requiredGB - result.freeGB).toFixed(2)} GB to continue.`
             );
         }
 
         return result;
     } catch (error) {
-        throw new Error(`Lỗi kiểm tra dung lượng ổ đĩa: ${error.message}`);
+        throw new Error(`Error checking disk space: ${error.message}`);
     }
 }
 
