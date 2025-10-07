@@ -1,4 +1,5 @@
 const validators = require("./validators");
+const chalk = require("chalk");
 
 function getPrompts(availableManagers, projectNameArg) {
   const prompts = [
@@ -149,7 +150,11 @@ function getPrompts(availableManagers, projectNameArg) {
     {
       type: "password",
       name: "adminPassword",
-      message: "Admin password:",
+      message: () => {
+        const question = "Admin password:";
+        const hint = chalk.gray("\n  (This password will be stored in Git. Change it after first login)");
+        return question + hint;
+      },
       mask: "*",
       validate: validators.adminPassword,
     },

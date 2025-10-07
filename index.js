@@ -112,7 +112,6 @@ async function main() {
     
     // Success message
     console.log(chalk.green('\n✨ Done! Your Enfyra backend is ready.\n'));
-    const warningMsg = chalk.yellow.bold('Admin credentials will be pushed to Git. Change your password immediately after first successful login.\n');
     
     const commands = {
       npm: 'npm run start',
@@ -120,7 +119,6 @@ async function main() {
       bun: 'bun run start'
     }[config.packageManager];
     
-    console.log(warningMsg);
     console.log(chalk.cyan(`  cd ${config.projectName}`));
     console.log(chalk.cyan(`  ${commands}`));
     
