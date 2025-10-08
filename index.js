@@ -11,14 +11,14 @@ const { validateAllConnections } = require('./components/connection-validator');
 async function main() {
   // Parse command line arguments
   program
-    .name('create-enfyra-be')
-    .description('Create a new Enfyra backend application')
+    .name('create-server')
+    .description('Create a new Enfyra server application')
     .argument('[project-name]', 'Name of your project')
     .option('--skip-prompts', 'Skip interactive prompts and use defaults')
     .parse();
 
   console.log(chalk.cyan.bold('\n╔════════════════════════════════╗'));
-  console.log(chalk.cyan.bold('║   🚀 Create Enfyra Backend    ║'));
+  console.log(chalk.cyan.bold('║   🚀 Create Enfyra Server     ║'));
   console.log(chalk.cyan.bold('╚════════════════════════════════╝\n'));
   
   // Check Node version
@@ -111,7 +111,7 @@ async function main() {
     await createProject(config);
     
     // Success message
-    console.log(chalk.green('\n✨ Done! Your Enfyra backend is ready.\n'));
+    console.log(chalk.green('\n✨ Done! Your Enfyra server is ready.\n'));
     
     const commands = {
       npm: 'npm run start',

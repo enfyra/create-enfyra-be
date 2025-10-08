@@ -1,21 +1,21 @@
-# @enfyra/create-enfyra-be
+# @enfyra/create-server
 
-Create a new Enfyra backend application with an interactive CLI setup.
+Create a new Enfyra server application with an interactive CLI setup.
 
 ## 🚀 Quick Start
 
 ```bash
 # Using npx (recommended)
-npx @enfyra/create-enfyra-be my-project
+npx @enfyra/create-server my-project
 
 # Using npm
-npm init @enfyra/create-enfyra-be my-project
+npm init @enfyra/create-server my-project
 
 # Using yarn
-yarn create @enfyra/create-enfyra-be my-project
+yarn create @enfyra/create-server my-project
 
 # Using bun
-bun create @enfyra/create-enfyra-be my-project
+bun create @enfyra/create-server my-project
 ```
 
 ## 📋 Requirements
@@ -46,10 +46,11 @@ npm run start
 
 ## 📚 Documentation
 
-For detailed setup, API usage, and development guides, visit the **[Enfyra Backend Documentation](https://github.com/dothinh115/enfyra-be#readme)**.
+For detailed setup, API usage, and development guides, visit the **[Enfyra Installation Guide](https://github.com/enfyra/documents/blob/main/getting-started/installation.md)**.
 
 ## 🔗 Links
 
-- [Enfyra Backend Repository](https://github.com/dothinh115/enfyra-be)
-- [Documentation](https://github.com/dothinh115/enfyra-be#readme)
-- [Issue Tracker](https://github.com/dothinh115/create-enfyra-be/issues)
+- [Enfyra Server Repository](https://github.com/enfyra/server)
+- [Installation Guide](https://github.com/enfyra/documents/blob/main/getting-started/installation.md)
+- [Documentation](https://github.com/enfyra/documents)
+- [Issue Tracker](https://github.com/enfyra/create-enfyra-server/issues)
