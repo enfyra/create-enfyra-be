@@ -102,9 +102,9 @@ async function createProject(config) {
     await fs.ensureDir(projectPath);
     spinner.succeed(chalk.green('Project directory created'));
 
-    // Download backend template using giget
-    spinner.start(chalk.blue('Downloading backend template...'));
-    await downloadTemplate('github:enfyra/backend', {
+    // Download server template using giget
+    spinner.start(chalk.blue('Downloading server template...'));
+    await downloadTemplate('github:enfyra/server', {
       dir: projectPath,
       force: true,
       provider: 'github'
@@ -150,7 +150,7 @@ async function createProject(config) {
         `\n\n${chalk.red(`⚠️  ${config.packageManager} is experiencing issues.`)}\n\n` +
         `${chalk.yellow('Please report this issue at:')} ${chalk.cyan(issueUrl)}\n\n` +
         `${chalk.green('Alternative: Please try using a different package manager:')}\n` +
-        `  ${chalk.cyan('npx @enfyra/create-enfyra-be')}\n` +
+        `  ${chalk.cyan('npx @enfyra/create-server')}\n` +
         `  ${chalk.gray(`Then select one of: ${otherManagers.join(', ')}`)}\n\n` +
         `${chalk.red('Error details:')} ${error.message}\n`
       );

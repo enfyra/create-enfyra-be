@@ -1,14 +1,14 @@
 {
-  "name": "@enfyra/create-enfyra-be",
-  "version": "0.1.19",
-  "description": "Create a new Enfyra backend application with an interactive CLI",
+  "name": "@enfyra/create-server",
+  "version": "0.1.21",
+  "description": "Create a new Enfyra server application with an interactive CLI",
   "main": "index.js",
   "bin": {
-    "create-enfyra-be": "./index.js"
+    "create-server": "./index.js"
   },
   "keywords": [
     "enfyra",
-    "backend",
+    "server",
     "nestjs",
     "api",
     "cli",
@@ -20,12 +20,12 @@
   "license": "MIT",
   "repository": {
     "type": "git",
-    "url": "https://github.com/dothinh115/create-enfyra-be"
+    "url": "https://github.com/enfyra/create-enfyra-server"
   },
   "bugs": {
-    "url": "https://github.com/dothinh115/create-enfyra-be/issues"
+    "url": "https://github.com/enfyra/create-enfyra-server/issues"
   },
-  "homepage": "https://github.com/dothinh115/create-enfyra-be#readme",
+  "homepage": "https://github.com/enfyra/create-enfyra-server#readme",
   "dependencies": {
     "chalk": "^4.1.2",
     "commander": "^9.4.1",
