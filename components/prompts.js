@@ -36,6 +36,7 @@ function getPrompts(availableManagers, projectNameArg) {
         { name: "MySQL", value: "mysql" },
         { name: "MariaDB", value: "mariadb" },
         { name: "PostgreSQL", value: "postgres" },
+        { name: "MongoDB", value: "mongodb" },
       ],
       default: "mysql",
     },
@@ -54,6 +55,8 @@ function getPrompts(availableManagers, projectNameArg) {
         switch (answers.dbType) {
           case "postgres":
             return "5432";
+          case "mongodb":
+            return "27017";
           case "mysql":
           case "mariadb":
             return "3306";
@@ -67,14 +70,26 @@ function getPrompts(availableManagers, projectNameArg) {
       type: "input",
       name: "dbUsername",
       message: "Database username:",
-      default: "root",
+      default: (answers) => {
+        return answers.dbType === "mongodb" ? "enfyra_admin" : "root";
+      },
       validate: validators.required,
     },
     {
       type: "password",
       name: "dbPassword",
-      message: "Database password (can be empty):",
+      message: (answers) => {
+        return answers.dbType === "mongodb" 
+          ? "Database password:" 
+          : "Database password (can be empty):";
+      },
       mask: "*",
+      validate: (input, answers) => {
+        if (answers.dbType === "mongodb" && !input) {
+          return "Password is required for MongoDB";
+        }
+        return true;
+      },
     },
     {
       type: "input",
@@ -83,6 +98,14 @@ function getPrompts(availableManagers, projectNameArg) {
       default: "enfyra",
       validate: validators.databaseName,
     },
+    {
+      type: "input",
+      name: "mongoAuthSource",
+      message: "MongoDB auth source:",
+      default: "admin",
+      when: (answers) => answers.dbType === "mongodb",
+      validate: validators.required,
+    },
 
     // DATABASE POOL SETTINGS
     {
@@ -90,6 +113,7 @@ function getPrompts(availableManagers, projectNameArg) {
       name: "configurePool",
       message: "Configure database pool settings?",
       default: false,
+      when: (answers) => answers.dbType !== "mongodb",
     },
     {
       type: "input",
