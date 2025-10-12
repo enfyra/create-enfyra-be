@@ -22,7 +22,7 @@ bun create @enfyra/create-server my-project
 
 - **Node.js** >= 20.0.0
 - **Package manager** (npm ≥8.0.0, yarn ≥1.22.0, or bun ≥1.0.0)
-- **Database** server (MySQL, MariaDB, or PostgreSQL)
+- **Database** server (MySQL, MariaDB, PostgreSQL, or MongoDB)
 - **Redis** server
 
 ## 🎯 What You Get

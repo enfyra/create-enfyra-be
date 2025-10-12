@@ -1,6 +1,6 @@
 {
   "name": "@enfyra/create-server",
-  "version": "0.1.21",
+  "version": "0.1.22",
   "description": "Create a new Enfyra server application with an interactive CLI",
   "main": "index.js",
   "bin": {
@@ -33,6 +33,7 @@
     "giget": "^2.0.0",
     "inquirer": "^8.2.5",
     "ioredis": "^5.3.2",
+    "mongodb": "^6.3.0",
     "mysql2": "^3.6.0",
     "ora": "^5.4.1",
     "pg": "^8.11.0"

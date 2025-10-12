@@ -9,7 +9,17 @@ async function generateEnvFile(projectPath, config) {
 }
 
 function generateEnvContent(config) {
-  return `#DB SETTING
+  let dbSection = '';
+  
+  if (config.dbType === 'mongodb') {
+    // Generate MongoDB URI
+    const mongoUri = `mongodb://${config.dbUsername}:${config.dbPassword}@${config.dbHost}:${config.dbPort}/${config.dbName}?authSource=${config.mongoAuthSource}`;
+    dbSection = `#DB SETTING
+DB_TYPE=mongodb
+MONGO_URI=${mongoUri}`;
+  } else {
+    // Generate SQL database settings
+    dbSection = `#DB SETTING
 DB_TYPE=${config.dbType}
 DB_HOST=${config.dbHost}
 DB_PORT=${config.dbPort}
@@ -21,7 +31,10 @@ DB_NAME=${config.dbName}
 DB_POOL_SIZE=${config.dbPoolSize || '100'}
 DB_CONNECTION_LIMIT=${config.dbConnectionLimit || '100'}
 DB_ACQUIRE_TIMEOUT=${config.dbAcquireTimeout || '60000'}
-DB_IDLE_TIMEOUT=${config.dbIdleTimeout || '30000'}
+DB_IDLE_TIMEOUT=${config.dbIdleTimeout || '30000'}`;
+  }
+
+  return `${dbSection}
 
 #REDIS SETTING
 REDIS_URI=${config.redisUri}

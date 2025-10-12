@@ -87,7 +87,7 @@ async function main() {
       console.log(chalk.cyan('\n🔄 Please re-enter your connection details:\n'));
       
       const connectionPrompts = getPrompts(availableManagers, projectNameArg).filter(prompt => 
-        ['dbType', 'dbHost', 'dbPort', 'dbUsername', 'dbPassword', 'dbName', 'redisUri'].includes(prompt.name) ||
+        ['dbType', 'dbHost', 'dbPort', 'dbUsername', 'dbPassword', 'dbName', 'mongoAuthSource', 'redisUri'].includes(prompt.name) ||
         (prompt.when && ['configurePool', 'dbPoolSize', 'dbConnectionLimit', 'dbAcquireTimeout', 'dbIdleTimeout'].includes(prompt.name))
       );
       
