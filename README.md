@@ -29,7 +29,7 @@ bun create @enfyra/create-server my-project
 
 The interactive CLI sets up a complete NestJS application with:
 
-- Database integration (MySQL/PostgreSQL/MariaDB)
+- Database integration (MySQL/PostgreSQL/MariaDB/MongoDB)
 - Redis caching
 - JWT authentication
 - Environment configuration
