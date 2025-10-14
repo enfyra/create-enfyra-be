@@ -8,7 +8,7 @@ function getPrompts(availableManagers, projectNameArg) {
       type: "input",
       name: "projectName",
       message: "Project name:",
-      default: projectNameArg || "my-enfyra-app",
+      default: projectNameArg || "my-enfyra-server",
       validate: validators.projectName,
       when: () => !projectNameArg, // Only ask if not provided
     },

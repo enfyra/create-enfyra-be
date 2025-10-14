@@ -1,10 +1,10 @@
 {
   "name": "@enfyra/create-server",
-  "version": "0.1.23",
+  "version": "0.1.25",
   "description": "Create a new Enfyra server application with an interactive CLI",
   "main": "index.js",
   "bin": {
-    "create-server": "./index.js"
+    "create-server": "index.js"
   },
   "keywords": [
     "enfyra",
@@ -20,7 +20,7 @@
   "license": "MIT",
   "repository": {
     "type": "git",
-    "url": "https://github.com/enfyra/create-enfyra-server"
+    "url": "git+https://github.com/enfyra/create-enfyra-server.git"
   },
   "bugs": {
     "url": "https://github.com/enfyra/create-enfyra-server/issues"
