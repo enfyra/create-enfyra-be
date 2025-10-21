@@ -28,8 +28,8 @@ async function validateDatabaseConnection(config) {
         port: parseInt(dbPort),
         user: dbUsername,
         password: dbPassword,
+        database: dbName || 'postgres', // Use specified db or default 'postgres'
         connectionTimeoutMillis: 5000
-        // Remove database from connection - only test server connection
       });
       await client.connect();
       await client.query('SELECT 1');
