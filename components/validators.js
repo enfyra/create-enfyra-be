@@ -73,6 +73,19 @@ const validators = {
   adminPassword: (input) => {
     if (!input || input.length < 4) return 'Password must be at least 4 characters';
     return true;
+  },
+
+  backendUrl: (input) => {
+    if (!input.trim()) return 'Backend URL is required';
+    if (!input.startsWith('http://') && !input.startsWith('https://')) {
+      return 'URL must start with http:// or https://';
+    }
+    try {
+      new URL(input);
+      return true;
+    } catch {
+      return 'Invalid URL format';
+    }
   }
 
 };

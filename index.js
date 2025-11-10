@@ -44,21 +44,20 @@ async function main() {
   console.log('');
 
   // Get project name from arguments or prompt
-  const projectNameArg = program.args[0];
+  let projectNameArg = program.args[0];
+  
+  // Validate project name argument if provided
+  if (projectNameArg) {
+    const validation = require('./components/validators').projectName(projectNameArg);
+    if (validation !== true) {
+      console.log(chalk.red(`❌ Invalid project name: ${validation}`));
+      console.log(chalk.yellow('Please enter a valid project name.\n'));
+      projectNameArg = null;
+    }
+  }
   
   // Get configuration from user
   const config = await inquirer.prompt(getPrompts(availableManagers, projectNameArg));
-  
-  // Add project name if provided as argument
-  if (projectNameArg) {
-    // Validate project name argument
-    const validation = require('./components/validators').projectName(projectNameArg);
-    if (validation !== true) {
-      console.log(chalk.red(`❌ ${validation}`));
-      process.exit(1);
-    }
-    config.projectName = projectNameArg;
-  }
 
   // Validate connections with retry option
   let connectionsValid = false;
