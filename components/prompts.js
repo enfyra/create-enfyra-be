@@ -180,9 +180,15 @@ function getPrompts(availableManagers, projectNameArg) {
     {
       type: "input",
       name: "backendUrl",
-      message: "Backend URL:",
+      message: () => {
+        const question = "Backend URL (for Swagger):";
+        const hint = chalk.gray("\n  This is the public API endpoint used by Swagger documentation.");
+        const hint2 = chalk.gray("  Must include protocol (http:// or https://) and be accurate.");
+        const hint3 = chalk.gray("  Example: http://localhost:1105 or https://api.example.com");
+        return question + hint + "\n" + hint2 + "\n" + hint3;
+      },
       default: (answers) => `http://localhost:${answers.appPort || "1105"}`,
-      validate: validators.required,
+      validate: validators.backendUrl,
     },
     {
       type: "list",
