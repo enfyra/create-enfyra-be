@@ -37,6 +37,10 @@ temp/
 .env
 .env.local
 .env.*.local
+@env_example
+cursorrules
+env_example
+.cursorrules
 
 # Build
 dist/

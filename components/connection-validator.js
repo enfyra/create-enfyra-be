@@ -10,7 +10,7 @@ async function validateDatabaseConnection(config) {
   console.log(chalk.gray(`\n🔍 Testing ${dbType} connection...`));
 
   try {
-    if (dbType === 'mysql' || dbType === 'mariadb') {
+    if (dbType === 'mysql') {
       const connection = await mysql.createConnection({
         host: dbHost,
         port: parseInt(dbPort),

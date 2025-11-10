@@ -34,7 +34,6 @@ function getPrompts(availableManagers, projectNameArg) {
       message: "Database type:",
       choices: [
         { name: "MySQL", value: "mysql" },
-        { name: "MariaDB", value: "mariadb" },
         { name: "PostgreSQL", value: "postgres" },
         { name: "MongoDB", value: "mongodb" },
       ],
@@ -58,7 +57,6 @@ function getPrompts(availableManagers, projectNameArg) {
           case "mongodb":
             return "27017";
           case "mysql":
-          case "mariadb":
             return "3306";
           default:
             return "3306";
@@ -156,6 +154,20 @@ function getPrompts(availableManagers, projectNameArg) {
       default: "redis://localhost:6379",
       validate: validators.redisUri,
     },
+    {
+      type: "confirm",
+      name: "configureRedis",
+      message: "Configure Redis TTL?",
+      default: false,
+    },
+    {
+      type: "input",
+      name: "redisTtl",
+      message: "Redis default TTL (seconds):",
+      default: "5",
+      when: (answers) => answers.configureRedis,
+      validate: validators.positiveNumber,
+    },
 
     // APP SETTINGS
     {
@@ -164,6 +176,54 @@ function getPrompts(availableManagers, projectNameArg) {
       message: "Application port:",
       default: "1105",
       validate: validators.port,
+    },
+    {
+      type: "input",
+      name: "backendUrl",
+      message: "Backend URL:",
+      default: (answers) => `http://localhost:${answers.appPort || "1105"}`,
+      validate: validators.required,
+    },
+    {
+      type: "list",
+      name: "nodeEnv",
+      message: "Node environment:",
+      choices: [
+        { name: "development", value: "development" },
+        { name: "production", value: "production" },
+        { name: "test", value: "test" },
+      ],
+      default: "development",
+    },
+    {
+      type: "confirm",
+      name: "configureHandlerTimeouts",
+      message: "Configure handler timeouts?",
+      default: false,
+    },
+    {
+      type: "input",
+      name: "handlerTimeout",
+      message: "Default handler timeout (ms):",
+      default: "20000",
+      when: (answers) => answers.configureHandlerTimeouts,
+      validate: validators.timeout,
+    },
+    {
+      type: "input",
+      name: "prehookTimeout",
+      message: "Default prehook timeout (ms):",
+      default: "20000",
+      when: (answers) => answers.configureHandlerTimeouts,
+      validate: validators.timeout,
+    },
+    {
+      type: "input",
+      name: "afterhookTimeout",
+      message: "Default afterhook timeout (ms):",
+      default: "20000",
+      when: (answers) => answers.configureHandlerTimeouts,
+      validate: validators.timeout,
     },
     {
       type: "input",
