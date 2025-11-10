@@ -105,47 +105,6 @@ function getPrompts(availableManagers, projectNameArg) {
       validate: validators.required,
     },
 
-    // DATABASE POOL SETTINGS
-    {
-      type: "confirm",
-      name: "configurePool",
-      message: "Configure database pool settings?",
-      default: false,
-      when: (answers) => answers.dbType !== "mongodb",
-    },
-    {
-      type: "input",
-      name: "dbPoolSize",
-      message: "Database pool size:",
-      default: "100",
-      when: (answers) => answers.configurePool,
-      validate: validators.positiveNumber,
-    },
-    {
-      type: "input",
-      name: "dbConnectionLimit",
-      message: "Connection limit:",
-      default: "100",
-      when: (answers) => answers.configurePool,
-      validate: validators.positiveNumber,
-    },
-    {
-      type: "input",
-      name: "dbAcquireTimeout",
-      message: "Acquire timeout (ms):",
-      default: "60000",
-      when: (answers) => answers.configurePool,
-      validate: validators.nonNegativeNumber,
-    },
-    {
-      type: "input",
-      name: "dbIdleTimeout",
-      message: "Idle timeout (ms):",
-      default: "30000",
-      when: (answers) => answers.configurePool,
-      validate: validators.nonNegativeNumber,
-    },
-
     // REDIS CONFIGURATION
     {
       type: "input",
@@ -153,20 +112,6 @@ function getPrompts(availableManagers, projectNameArg) {
       message: "Redis URI:",
       default: "redis://localhost:6379",
       validate: validators.redisUri,
-    },
-    {
-      type: "confirm",
-      name: "configureRedis",
-      message: "Configure Redis TTL?",
-      default: false,
-    },
-    {
-      type: "input",
-      name: "redisTtl",
-      message: "Redis default TTL (seconds):",
-      default: "5",
-      when: (answers) => answers.configureRedis,
-      validate: validators.positiveNumber,
     },
 
     // APP SETTINGS
@@ -201,18 +146,70 @@ function getPrompts(availableManagers, projectNameArg) {
       ],
       default: "development",
     },
+
+    // ADVANCED CONFIGURATION
+    {
+      type: "confirm",
+      name: "configureAdvanced",
+      message: "Configure advanced settings?",
+      default: false,
+    },
+
+    // DATABASE POOL SETTINGS (Advanced)
+    {
+      type: "confirm",
+      name: "configurePool",
+      message: "Configure database pool settings?",
+      default: false,
+      when: (answers) => answers.configureAdvanced && answers.dbType !== "mongodb",
+    },
+    {
+      type: "input",
+      name: "dbPoolSize",
+      message: "Database pool size:",
+      default: "100",
+      when: (answers) => answers.configureAdvanced && answers.configurePool,
+      validate: validators.positiveNumber,
+    },
+    {
+      type: "input",
+      name: "dbConnectionLimit",
+      message: "Connection limit:",
+      default: "100",
+      when: (answers) => answers.configureAdvanced && answers.configurePool,
+      validate: validators.positiveNumber,
+    },
+    {
+      type: "input",
+      name: "dbAcquireTimeout",
+      message: "Acquire timeout (ms):",
+      default: "60000",
+      when: (answers) => answers.configureAdvanced && answers.configurePool,
+      validate: validators.nonNegativeNumber,
+    },
+    {
+      type: "input",
+      name: "dbIdleTimeout",
+      message: "Idle timeout (ms):",
+      default: "30000",
+      when: (answers) => answers.configureAdvanced && answers.configurePool,
+      validate: validators.nonNegativeNumber,
+    },
+
+    // HANDLER TIMEOUTS (Advanced)
     {
       type: "confirm",
       name: "configureHandlerTimeouts",
       message: "Configure handler timeouts?",
       default: false,
+      when: (answers) => answers.configureAdvanced,
     },
     {
       type: "input",
       name: "handlerTimeout",
       message: "Default handler timeout (ms):",
       default: "20000",
-      when: (answers) => answers.configureHandlerTimeouts,
+      when: (answers) => answers.configureAdvanced && answers.configureHandlerTimeouts,
       validate: validators.timeout,
     },
     {
@@ -220,7 +217,7 @@ function getPrompts(availableManagers, projectNameArg) {
       name: "prehookTimeout",
       message: "Default prehook timeout (ms):",
       default: "20000",
-      when: (answers) => answers.configureHandlerTimeouts,
+      when: (answers) => answers.configureAdvanced && answers.configureHandlerTimeouts,
       validate: validators.timeout,
     },
     {
@@ -228,7 +225,7 @@ function getPrompts(availableManagers, projectNameArg) {
       name: "afterhookTimeout",
       message: "Default afterhook timeout (ms):",
       default: "20000",
-      when: (answers) => answers.configureHandlerTimeouts,
+      when: (answers) => answers.configureAdvanced && answers.configureHandlerTimeouts,
       validate: validators.timeout,
     },
     {

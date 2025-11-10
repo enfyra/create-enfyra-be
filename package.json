@@ -1,6 +1,6 @@
 {
   "name": "@enfyra/create-server",
-  "version": "0.1.29",
+  "version": "0.1.30",
   "description": "Create a new Enfyra server application with an interactive CLI",
   "main": "index.js",
   "bin": {
