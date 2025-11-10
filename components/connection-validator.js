@@ -10,7 +10,7 @@ async function validateDatabaseConnection(config) {
   console.log(chalk.gray(`\n🔍 Testing ${dbType} connection...`));
 
   try {
-    if (dbType === 'mysql' || dbType === 'mariadb') {
+    if (dbType === 'mysql') {
       const connection = await mysql.createConnection({
         host: dbHost,
         port: parseInt(dbPort),
@@ -28,8 +28,8 @@ async function validateDatabaseConnection(config) {
         port: parseInt(dbPort),
         user: dbUsername,
         password: dbPassword,
+        database: dbName || 'postgres', // Use specified db or default 'postgres'
         connectionTimeoutMillis: 5000
-        // Remove database from connection - only test server connection
       });
       await client.connect();
       await client.query('SELECT 1');
