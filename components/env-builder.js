@@ -10,7 +10,7 @@ async function generateEnvFile(projectPath, config) {
 }
 
 function generateEnvContent(config) {
-  const redisTtl = config.configureRedis ? config.redisTtl : '5';
+  const redisTtl = '5';
   const handlerTimeout = config.configureHandlerTimeouts ? config.handlerTimeout : '20000';
   const prehookTimeout = config.configureHandlerTimeouts ? config.prehookTimeout : '20000';
   const afterhookTimeout = config.configureHandlerTimeouts ? config.afterhookTimeout : '20000';
