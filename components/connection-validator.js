@@ -17,7 +17,6 @@ async function validateDatabaseConnection(config) {
         user: dbUsername,
         password: dbPassword,
         connectTimeout: 5000
-        // Remove database from connection - only test server connection
       });
       await connection.ping();
       await connection.end();
@@ -28,7 +27,7 @@ async function validateDatabaseConnection(config) {
         port: parseInt(dbPort),
         user: dbUsername,
         password: dbPassword,
-        database: dbName || 'postgres', // Use specified db or default 'postgres'
+        database: dbName || 'postgres',
         connectionTimeoutMillis: 5000
       });
       await client.connect();
@@ -52,7 +51,6 @@ async function validateDatabaseConnection(config) {
   } catch (error) {
     console.log(chalk.red(`❌ Database connection failed: ${error.message}`));
 
-    // Provide helpful error suggestions
     if (error.code === 'ECONNREFUSED') {
       console.log(chalk.yellow(`💡 Suggestions:`));
       console.log(chalk.yellow(`   • Check if ${dbType} server is running`));
@@ -93,8 +91,7 @@ async function validateRedisConnection(redisUri) {
     
   } catch (error) {
     console.log(chalk.red(`❌ Redis connection failed: ${error.message}`));
-    
-    // Provide helpful error suggestions
+
     if (error.code === 'ECONNREFUSED') {
       console.log(chalk.yellow(`💡 Suggestions:`));
       console.log(chalk.yellow(`   • Check if Redis server is running`));

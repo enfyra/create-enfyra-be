@@ -9,7 +9,6 @@ const { getPrompts, getConfirmationPrompt } = require('./components/prompts');
 const { validateAllConnections } = require('./components/connection-validator');
 
 async function main() {
-  // Parse command line arguments
   program
     .name('create-server')
     .description('Create a new Enfyra server application')
@@ -20,11 +19,9 @@ async function main() {
   console.log(chalk.cyan.bold('\n╔════════════════════════════════╗'));
   console.log(chalk.cyan.bold('║   🚀 Create Enfyra Server     ║'));
   console.log(chalk.cyan.bold('╚════════════════════════════════╝\n'));
-  
-  // Check Node version
+
   checkNodeVersion();
 
-  // Check available package managers
   const availableManagers = detectPackageManagers();
   if (availableManagers.length === 0) {
     console.log(chalk.red('❌ No compatible package manager found!'));
@@ -36,17 +33,14 @@ async function main() {
     process.exit(1);
   }
 
-  // Show detected package managers with versions
   console.log(chalk.gray('Detected package managers:'));
   availableManagers.forEach(pm => {
     console.log(chalk.gray(`  • ${pm.name} v${pm.version}`));
   });
   console.log('');
 
-  // Get project name from arguments or prompt
   let projectNameArg = program.args[0];
-  
-  // Validate project name argument if provided
+
   if (projectNameArg) {
     const validation = require('./components/validators').projectName(projectNameArg);
     if (validation !== true) {
@@ -55,15 +49,17 @@ async function main() {
       projectNameArg = null;
     }
   }
-  
-  // Get configuration from user
+
   const config = await inquirer.prompt(getPrompts(availableManagers, projectNameArg));
 
-  // Validate connections with retry option
+  if (projectNameArg && !config.projectName) {
+    config.projectName = projectNameArg;
+  }
+
   let connectionsValid = false;
   while (!connectionsValid) {
     connectionsValid = await validateAllConnections(config);
-    
+
     if (!connectionsValid) {
       const { retry } = await inquirer.prompt([
         {
@@ -76,28 +72,25 @@ async function main() {
           ]
         }
       ]);
-      
+
       if (retry === 'exit') {
         console.log(chalk.yellow('\n👋 Setup cancelled. Fix your connections and try again later.'));
         process.exit(0);
       }
-      
-      // Re-prompt for connection details
+
       console.log(chalk.cyan('\n🔄 Please re-enter your connection details:\n'));
-      
-      const connectionPrompts = getPrompts(availableManagers, projectNameArg).filter(prompt => 
+
+      const connectionPrompts = getPrompts(availableManagers, projectNameArg).filter(prompt =>
         ['dbType', 'dbHost', 'dbPort', 'dbUsername', 'dbPassword', 'dbName', 'mongoAuthSource', 'redisUri'].includes(prompt.name) ||
         (prompt.when && ['configurePool', 'dbPoolSize', 'dbConnectionLimit', 'dbAcquireTimeout', 'dbIdleTimeout'].includes(prompt.name))
       );
-      
+
       const newConnectionConfig = await inquirer.prompt(connectionPrompts);
-      
-      // Update config with new connection details
+
       Object.assign(config, newConnectionConfig);
     }
   }
 
-  // Simple confirmation without excessive output
   const { confirm } = await inquirer.prompt([getConfirmationPrompt()]);
 
   if (!confirm) {
@@ -105,22 +98,20 @@ async function main() {
     process.exit(0);
   }
 
-  // Create the project
   try {
     await createProject(config);
-    
-    // Success message
+
     console.log(chalk.green('\n✨ Done! Your Enfyra server is ready.\n'));
-    
+
     const commands = {
       npm: 'npm run start',
       yarn: 'yarn start',
       bun: 'bun run start'
     }[config.packageManager];
-    
+
     console.log(chalk.cyan(`  cd ${config.projectName}`));
     console.log(chalk.cyan(`  ${commands}`));
-    
+
   } catch (error) {
     console.error(chalk.red(`\n❌ Setup failed: ${error.message}`));
     console.log(chalk.yellow('\n💡 You can try again with the same command.'));
@@ -128,13 +119,11 @@ async function main() {
   }
 }
 
-// Handle errors
 process.on('unhandledRejection', (error) => {
   console.error(chalk.red(`\n❌ Unexpected error: ${error.message}`));
   process.exit(1);
 });
 
-// Run
 main().catch(error => {
   console.error(chalk.red(`\n❌ Error: ${error.message}`));
   process.exit(1);
