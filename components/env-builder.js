@@ -40,14 +40,14 @@ DB_NAME=${config.dbName}`;
 
     if (config.configurePool) {
       poolSection = `
-DB_POOL_SIZE=${config.dbPoolSize}
-DB_CONNECTION_LIMIT=${config.dbConnectionLimit}
+DB_POOL_MIN_SIZE=${config.dbPoolMinSize}
+DB_POOL_MAX_SIZE=${config.dbPoolMaxSize}
 DB_ACQUIRE_TIMEOUT=${config.dbAcquireTimeout}
 DB_IDLE_TIMEOUT=${config.dbIdleTimeout}`;
     } else {
       poolSection = `
-DB_POOL_SIZE=100
-DB_CONNECTION_LIMIT=100
+DB_POOL_MIN_SIZE=2
+DB_POOL_MAX_SIZE=100
 DB_ACQUIRE_TIMEOUT=60000
 DB_IDLE_TIMEOUT=30000`;
     }
