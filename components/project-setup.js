@@ -99,6 +99,13 @@ async function createProject(config) {
     });
     spinner.succeed(chalk.green('Template downloaded successfully'));
 
+    const githubFolderPath = path.join(projectPath, '.github');
+    if (fs.existsSync(githubFolderPath)) {
+      spinner.start(chalk.blue('Removing .github folder...'));
+      await fs.remove(githubFolderPath);
+      spinner.succeed(chalk.green('.github folder removed'));
+    }
+
     spinner.start(chalk.blue('Updating package.json...'));
     await updatePackageJson(projectPath, config);
     spinner.succeed(chalk.green('Package.json updated'));
