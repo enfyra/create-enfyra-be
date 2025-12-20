@@ -28,6 +28,35 @@ const validators = {
     return true;
   },
 
+  dbUri: (input) => {
+    if (!input.trim()) return 'Database URI is required';
+    if (!input.startsWith('mysql://') && !input.startsWith('postgresql://') && !input.startsWith('postgres://')) {
+      return 'Must start with mysql://, postgresql://, or postgres://';
+    }
+    try {
+      const url = new URL(input);
+      if (!url.hostname) return 'Invalid URI: hostname is required';
+      if (!url.pathname || url.pathname === '/') return 'Invalid URI: database name is required';
+      return true;
+    } catch {
+      return 'Invalid URI format';
+    }
+  },
+
+  mongoUri: (input) => {
+    if (!input.trim()) return 'MongoDB URI is required';
+    if (!input.startsWith('mongodb://') && !input.startsWith('mongodb+srv://')) {
+      return 'Must start with mongodb:// or mongodb+srv://';
+    }
+    try {
+      const url = new URL(input);
+      if (!url.hostname) return 'Invalid URI: hostname is required';
+      return true;
+    } catch {
+      return 'Invalid URI format';
+    }
+  },
+
   redisUri: (input) => {
     if (!input.trim()) return 'Redis is required for Enfyra';
     if (!input.startsWith('redis://')) return 'Must start with redis://';
