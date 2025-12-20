@@ -27,16 +27,16 @@ function generateEnvContent(config) {
   let poolSection = '';
 
   if (config.dbType === 'mongodb') {
-    const mongoUri = `mongodb://${config.dbUsername}:${config.dbPassword}@${config.dbHost}:${config.dbPort}/${config.dbName}?authSource=${config.mongoAuthSource}`;
     dbSection = `DB_TYPE=mongodb
-MONGO_URI=${mongoUri}`;
+MONGO_URI=${config.mongoUri}`;
   } else {
     dbSection = `DB_TYPE=${config.dbType}
-DB_HOST=${config.dbHost}
-DB_PORT=${config.dbPort}
-DB_USERNAME=${config.dbUsername}
-DB_PASSWORD=${config.dbPassword}
-DB_NAME=${config.dbName}`;
+DB_URI=${config.dbUri}`;
+
+    if (config.setupReplica && config.dbReplicaUri) {
+      dbSection += `
+DB_REPLICA_URI=${config.dbReplicaUri}`;
+    }
 
     if (config.configurePool) {
       poolSection = `

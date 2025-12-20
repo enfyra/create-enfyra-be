@@ -38,68 +38,66 @@ function getPrompts(availableManagers, projectNameArg) {
     },
     {
       type: "input",
-      name: "dbHost",
-      message: "Database host:",
-      default: "localhost",
-      validate: validators.required,
-    },
-    {
-      type: "input",
-      name: "dbPort",
-      message: "Database port:",
+      name: "dbUri",
+      message: (answers) => {
+        if (answers.dbType === "mysql") {
+          return "Database URI (mysql://user:password@host:port/database):";
+        } else if (answers.dbType === "postgres") {
+          return "Database URI (postgresql://user:password@host:port/database):";
+        }
+        return "Database URI:";
+      },
       default: (answers) => {
         switch (answers.dbType) {
           case "postgres":
-            return "5432";
-          case "mongodb":
-            return "27017";
+            return "postgresql://root:1234@localhost:5432/enfyra";
           case "mysql":
-            return "3306";
+            return "mysql://root:1234@localhost:3306/enfyra";
           default:
-            return "3306";
+            return "";
         }
       },
-      validate: validators.port,
+      when: (answers) => answers.dbType !== "mongodb",
+      validate: validators.dbUri,
     },
     {
       type: "input",
-      name: "dbUsername",
-      message: "Database username:",
-      default: (answers) => {
-        return answers.dbType === "mongodb" ? "enfyra_admin" : "root";
-      },
-      validate: validators.required,
-    },
-    {
-      type: "password",
-      name: "dbPassword",
-      message: (answers) => {
-        return answers.dbType === "mongodb" 
-          ? "Database password:" 
-          : "Database password (can be empty):";
-      },
-      mask: "*",
-      validate: (input, answers) => {
-        if (answers.dbType === "mongodb" && !input) {
-          return "Password is required for MongoDB";
-        }
-        return true;
-      },
-    },
-    {
-      type: "input",
-      name: "dbName",
-      message: "Database name:",
-      default: "enfyra",
-      validate: validators.databaseName,
-    },
-    {
-      type: "input",
-      name: "mongoAuthSource",
-      message: "MongoDB auth source:",
-      default: "admin",
+      name: "mongoUri",
+      message: "MongoDB URI:",
+      default: "mongodb://enfyra_admin:enfyra_password_123@localhost:27017/enfyra?authSource=admin",
       when: (answers) => answers.dbType === "mongodb",
-      validate: validators.required,
+      validate: validators.mongoUri,
+    },
+    {
+      type: "confirm",
+      name: "setupReplica",
+      message: "Setup read replica?",
+      default: false,
+      when: (answers) => answers.dbType !== "mongodb",
+    },
+    {
+      type: "input",
+      name: "dbReplicaUri",
+      message: (answers) => {
+        if (answers.dbType === "mysql") {
+          return "Replica URI (mysql://user:password@host:port/database):";
+        } else if (answers.dbType === "postgres") {
+          return "Replica URI (postgresql://user:password@host:port/database):";
+        }
+        return "Replica URI:";
+      },
+      default: (answers) => {
+        switch (answers.dbType) {
+          case "postgres":
+            return "postgresql://root:1234@localhost:5433/enfyra";
+          case "mysql":
+            return "mysql://root:1234@localhost:3307/enfyra";
+          default:
+            return "";
+        }
+      },
+      when: (answers) => answers.setupReplica === true && answers.dbType !== "mongodb",
+      validate: validators.dbUri,
     },
 
     // REDIS CONFIGURATION
